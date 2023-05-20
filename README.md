@@ -15,7 +15,7 @@ This library is a personal project developed to explore and familiarize with var
 ## Installation
 To use the Graph library in your C++ project, follow these steps:
 
-1. Copy the Graph.h and Graph.cpp files into your project directory.
+1. Copy the Node.h, Node.cpp, Graph.h and Graph.cpp files into your project directory.
 2. Include the library header file in your source code:
 
 ```cpp
