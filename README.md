@@ -3,6 +3,8 @@
 
 This Graph library is a C++ template library that provides an implementation of a graph data structure. It allows you to create and manipulate graphs with nodes and edges. This library supports both undirected and directed graphs.
 
+This library is a personal project developed to explore and familiarize with various features of C++ programming language.
+
 ## Features
 - Templated implementation: The library is designed as a C++ template, allowing you to create graphs with custom key, data, and cost types.
 - Node management: You can add, remove, and access nodes using their keys.
