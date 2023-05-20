@@ -1,5 +1,5 @@
-#ifndef Graph_H
-#define Graph_H
+#ifndef GRAPH_Graph_H
+#define GRAPH_Graph_H
 
 #include <map>
 #include <utility>

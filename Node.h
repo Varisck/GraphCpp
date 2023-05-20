@@ -1,5 +1,5 @@
-#ifndef Node_H
-#define Node_H
+#ifndef GRAPH_Node_H
+#define GRAPH_Node_H
 
 #include <memory>
 #include <list>
