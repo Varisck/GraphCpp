@@ -71,7 +71,7 @@ for (const auto& node : graph) {
 ```
 
 ### Graph Types
-The library provides two predefined graph types: DirectedGraph and UndirectedGraph. These aliases allow you to create directed and undirected graphs more conveniently. For example:
+The library provides two predefined graph types: `DirectedGraph` and `UndirectedGraph`. These aliases allow you to create directed and undirected graphs more conveniently. For example:
 
 ```cpp
 DirectedGraph<int, std::string, double> directedGraph;
