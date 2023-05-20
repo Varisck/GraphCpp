@@ -33,10 +33,10 @@ UndirectedGraph<int, std::string, double> graph;
 To add nodes to the graph, use the the `operator[]` function or the `emplace` function, which takes a key and optionally a node object. If a node object is not provided, an empty node will be created. Here are some examples:
 
 ```cpp
-graph[1]; // Add a node with key value 1 and default-constructed data
-graph[2] = "Node 2"
-graph.emplace(3);                           // Add a node with key 3 and default-constructed data
-graph.emplace(4, Node<std::string, double>{"Node 4"});   // Add a node with key 4 and custom data
+graph[1];                                               // Add a node with key value 1 and default-constructed data
+graph[2] = "Node 2"                                     // Add a node with key 2 and value "Node 2"
+graph.emplace(3);                                       // Add a node with key 3 and default-constructed data
+graph.emplace(4, Node<std::string, double>{"Node 4"});  // Add a node with key 4 and custom data
 ```
 
 To access the data of a node, you can use the `operator[]` function, providing the key of the node:
@@ -49,7 +49,7 @@ std::string& data = graph[2];  // Access the data of the node with key 2
 You can assign costs to edges between nodes using the `operator()` function. The cost can be accessed and modified using this function as well. When creating an edge without assigning any value cost the default cost will be `std::numeric_limits<Cost>::max();` if `std::numeric_limits<Cost>::is_specialized`. Here are some examples:
 
 ```cpp
-graph(1, 2);    	            // Creating edge between 1 and 2 with max value of double
+graph(1, 2);                    // Creating edge between 1 and 2 with max value of double
 graph(1, 2) = 3.0;              // Assign a cost of 3.0 to the edge between nodes 1 and 2
 double cost = graph(1, 2);      // Access the cost of the edge between nodes 1 and 2
 graph(1, 2) += 1.5;             // Increase the cost of the edge between nodes 1 and 2 by 1.5 
