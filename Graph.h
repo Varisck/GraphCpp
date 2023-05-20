@@ -47,7 +47,7 @@ class Graph {
         using iterator = typename MapNodes::iterator;
         using const_iterator = typename MapNodes::const_iterator;
         using reverse_iterator = typename MapNodes::reverse_iterator;
-        using const_``reverse_iterator = typename MapNodes::const_reverse_iterator;
+        using const_reverse_iterator = typename MapNodes::const_reverse_iterator;
 
 
         // Node functinos
