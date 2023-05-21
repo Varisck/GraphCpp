@@ -16,10 +16,11 @@ class Node {
 			std::shared_ptr<Cost> _cost;
 
 		public:
-			explicit edge(const std::weak_ptr<Node> &ptr, Cost c);
+			explicit edge(const std::weak_ptr<Node> &ptr, Cost &c);
 			edge(const edge& other);
 
 			Cost& cost() const;
+			std::shared_ptr<Cost> costPtr() const;
 
 		friend class Node<Data, Cost>;
 	};

@@ -68,4 +68,18 @@ int main() {
 	std::cout << "Fine!" << std::endl;
 
 
+	std::cout << "New undirected Graph: " << std::endl;
+
+	UndirectedGraph<char, int> undir;
+
+	undir['a'] = 12;
+	undir['b'] = 11;
+	undir['c'] = 10;
+	undir['d'] = 9;
+
+	undir('a', 'b') = 100;
+
+	std::cout << undir('a', 'b') << " " << undir('b', 'a') << std::endl;
+
+
 }

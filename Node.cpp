@@ -7,7 +7,7 @@
 */
 
 template<class Data, class Cost = std::size_t>
-Node<Data, Cost>::edge::edge(const std::weak_ptr<Node> &ptr, Cost c) 
+Node<Data, Cost>::edge::edge(const std::weak_ptr<Node> &ptr, Cost &c) 
 	: _nodeTo(ptr), _cost(std::make_shared<Cost>(c)) {} 
 
 template<class Data, class Cost = std::size_t>
@@ -17,6 +17,11 @@ Node<Data, Cost>::edge::edge(const edge& other)
 template<class Data, class Cost = std::size_t>
 Cost& Node<Data, Cost>::edge::cost() const {
 	return *_cost;
+}
+
+template<class Data, class Cost = std::size_t>
+std::shared_ptr<Cost> Node<Data, Cost>::edge::costPtr() const {
+	return _cost;
 }
 
 /*

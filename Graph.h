@@ -7,100 +7,102 @@
 
 #include "Node.h"
 
-
 enum GraphType {
-    undirected, 
+    undirected,
     directed
 };
 
-
 /*
     Key = key to reference the nodeValue
-    Data = data stored in node 
+    Data = data stored in node
     Cost = cost type of edges
-    GraphType = enumerate of graph 
-    
+    GraphType = enumerate of graph
+
 */
 template <class Key, class Data, class Cost = std::size_t, GraphType GT = undirected>
 class Graph {
-    
-    private:
 
-        using node = typename Node<Data, Cost>::Node;
-        using NodeSharedPtr = std::shared_ptr<Node<Data, Cost>>;
-        using MapNodes = std::map<Key, NodeSharedPtr>;
+private:
+    using node = typename Node<Data, Cost>::Node;
+    using NodeSharedPtr = std::shared_ptr<Node<Data, Cost>>;
+    using MapNodes = std::map<Key, NodeSharedPtr>;
 
-        MapNodes _nodes;
-        Cost _maxCost;
+    MapNodes _nodes;
+    Cost _maxCost;
 
-    public:
-        
-        explicit Graph();
-        // cpy ctor
-        explicit Graph(const Graph& other);
-        // move ctor
-        explicit Graph(Graph&& other);
+    GraphType getGraphType() {
+        return GT;
+    }
 
-        ~Graph();
+public:
+    // iterators
+    using iterator = typename MapNodes::iterator;
+    using const_iterator = typename MapNodes::const_iterator;
+    using reverse_iterator = typename MapNodes::reverse_iterator;
+    using const_reverse_iterator = typename MapNodes::const_reverse_iterator;
 
-        // iterators
-        using iterator = typename MapNodes::iterator;
-        using const_iterator = typename MapNodes::const_iterator;
-        using reverse_iterator = typename MapNodes::reverse_iterator;
-        using const_reverse_iterator = typename MapNodes::const_reverse_iterator;
+    // Graph functions
+    explicit Graph();
+    // cpy ctor
+    explicit Graph(const Graph &other);
+    // move ctor
+    explicit Graph(Graph &&other);
+
+    ~Graph();
+
+    // Node functinos
+
+    Data &operator[](const Key &key);
+    Data &operator[](Key &&key);
+
+    iterator find(const Key &key);
+    const_iterator find(const Key &key) const;
+
+    std::pair<iterator, bool> emplace(const Key &key);
+    std::pair<iterator, bool> emplace(const Key &&key);
+    std::pair<iterator, bool> emplace(const Key &key, const node &node);
+    std::pair<iterator, bool> emplace(const Key &&key, const node &&node);
+    // remove node functions to be emplemented
+
+    // Edge functions
+
+    Cost &operator()(const Key &key1, const Key &key2);
+    Cost &operator()(Key &&key1, Key &&key2);
+    Cost &operator()(iterator n1, iterator n2);
+    const Cost &operator()(const Key &key1, const Key &key2, const Cost &cost);
+    // remove edge functions to be implemented
 
 
-        // Node functinos
+    bool isConnectedTo(iterator itNode1, iterator itNode2);
 
-        Data& operator[](const Key& key);
-        Data& operator[](Key&& key);
+    // Algorithms functions
 
-        iterator find(const Key& key);
-        const_iterator find(const Key& key) const;
+    // Iterators functinos
 
-        std::pair<iterator, bool> emplace(const Key& key);
-        std::pair<iterator, bool> emplace(const Key&& key);
-        std::pair<iterator, bool> emplace(const Key& key, const node& node);
-        std::pair<iterator, bool> emplace(const Key&& key, const node&& node);
+    iterator begin() noexcept;
+    iterator end() noexcept;
 
+    const_iterator begin() const noexcept;
+    const_iterator end() const noexcept;
 
-        // Edge functions
+    const_iterator cbegin() const noexcept;
+    const_iterator cend() const noexcept;
 
-        Cost& operator()(const Key& key1, const Key& key2);
-        Cost& operator()(Key&& key1, Key&& key2);
-        Cost& operator()(iterator n1, iterator n2);
-        const Cost& operator()(const Key& key1, const Key& key2, const Cost& cost);
+    reverse_iterator rbegin() noexcept;
+    reverse_iterator rend() noexcept;
 
-        bool isConnectedTo(iterator itNode1, iterator itNode2);
+    const_reverse_iterator rbegin() const noexcept;
+    const_reverse_iterator rend() const noexcept;
 
-
-        // Iterators functinos
-
-        iterator begin() noexcept;
-        iterator end() noexcept;
-
-        const_iterator begin() const noexcept;
-        const_iterator end() const noexcept;
-
-        const_iterator cbegin() const noexcept;
-        const_iterator cend() const noexcept;
-
-        reverse_iterator rbegin() noexcept;
-        reverse_iterator rend() noexcept;
-
-        const_reverse_iterator rbegin()  const noexcept;
-        const_reverse_iterator rend()  const noexcept;
-
-        const_reverse_iterator crbegin() const noexcept;
-        const_reverse_iterator crend() const noexcept;
-
+    const_reverse_iterator crbegin() const noexcept;
+    const_reverse_iterator crend() const noexcept;
 };
 
 // definition of graphs
-template<class Key, class Data, class Cost>
+template <class Key, class Data, class Cost = std::size_t>
 using DirectedGraph = Graph<Key, Data, Cost, directed>;
 
-template<class Key, class Data, class Cost>
+template <class Key, class Data, class Cost = std::size_t>
 using UndirectedGraph = Graph<Key, Data, Cost, undirected>;
 
 #include "Graph.cpp"
