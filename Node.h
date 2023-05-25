@@ -1,5 +1,5 @@
-#ifndef GRAPH_Node_H
-#define GRAPH_Node_H
+#ifndef GRAPH_NODE_H_
+#define GRAPH_NODE_H_
 
 #include <memory>
 #include <list>
@@ -12,8 +12,8 @@ class Node {
 	class edge {
 		private:
 			// node connected to current
-			std::weak_ptr<Node> _nodeTo;
-			std::shared_ptr<Cost> _cost;
+			std::weak_ptr<Node> nodeTo_;
+			std::shared_ptr<Cost> cost_;
 
 		public:
 			explicit edge(const std::weak_ptr<Node> &ptr, Cost &c);
@@ -26,13 +26,13 @@ class Node {
 	};
 
 	private:
-		std::list<edge> _listEdges;
-		Data _data;
+		std::list<edge> listEdges_;
+		Data data_;
 
 
 	public:
 		explicit Node();
-		explicit Node(const Data &data);
+		Node(const Data &data);
 		Node(Data&& data);
 		Node(const Node& node);
 		Node(Node&& other);
@@ -40,36 +40,36 @@ class Node {
 		Data& getData();
 		Data& getData() const;
 
-		typedef std::list<edge> ListEdges;
-		typedef typename ListEdges::iterator ListEdgesIterator;
+		using ListEdges = std::list<edge>;
+		using ListEdgesIterator = typename ListEdges::iterator;
 
 		// returns iterator to edge in list or _listEdge.end()
 		ListEdgesIterator findEdge(std::shared_ptr<Node> toPtr) {
 			assert(toPtr != nullptr);
 
-			for(ListEdgesIterator it = _listEdges.begin(); it != _listEdges.end(); ++it){
-				if(it->_nodeTo.lock() == toPtr){
+			for(ListEdgesIterator it = listEdges_.begin(); it != listEdges_.end(); ++it){
+				if(it->nodeTo_.lock() == toPtr){
 					return it;
 				}
 			}
-			return _listEdges.end();
+			return listEdges_.end();
 		}
 
 		bool isEdge(std::shared_ptr<Node> toPtr){
-			return findEdge(toPtr) != _listEdges.end();
+			return findEdge(toPtr) != listEdges_.end();
 		}
 
 		std::pair<ListEdgesIterator, bool> add_edge(std::shared_ptr<Node> toPtr, Cost& cost) {
 			assert(toPtr != nullptr);
 
 			ListEdgesIterator it = findEdge(toPtr);
-			if(it != _listEdges.end()){
+			if(it != listEdges_.end()){
 				it->cost() = cost;
 				return std::make_pair(it, false);
 			}
 
-			_listEdges.emplace_back(std::weak_ptr<Node>(toPtr), cost);
-			return std::make_pair(--_listEdges.end(), true);
+			listEdges_.emplace_back(std::weak_ptr<Node>(toPtr), cost);
+			return std::make_pair(--listEdges_.end(), true);
 		}
 
 		Cost& getEdgeCost(std::shared_ptr<Node> toPtr){

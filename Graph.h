@@ -1,5 +1,5 @@
-#ifndef GRAPH_Graph_H
-#define GRAPH_Graph_H
+#ifndef GRAPH_GRAPH_H_
+#define GRAPH_GRAPH_H_
 
 #include <map>
 #include <utility>
@@ -27,12 +27,10 @@ private:
     using NodeSharedPtr = std::shared_ptr<Node<Data, Cost>>;
     using MapNodes = std::map<Key, NodeSharedPtr>;
 
-    MapNodes _nodes;
-    Cost _maxCost;
+    MapNodes nodes_;
+    Cost maxCost_;
 
-    GraphType getGraphType() {
-        return GT;
-    }
+    GraphType getGraphType() { return GT; }
 
 public:
     // iterators
@@ -41,14 +39,23 @@ public:
     using reverse_iterator = typename MapNodes::reverse_iterator;
     using const_reverse_iterator = typename MapNodes::const_reverse_iterator;
 
-    // Graph functions
+    // Graph
+
     explicit Graph();
     // cpy ctor
-    explicit Graph(const Graph &other);
+    Graph(const Graph &other);
     // move ctor
-    explicit Graph(Graph &&other);
-
+    Graph(Graph &&other);
     ~Graph();
+
+    // merge *this with other (Graph with same tpyes) 
+    // returns new size of *this
+    std::size_t mergeGraph(Graph<Key, Data, Cost, GT>& other);
+
+    // Capacity
+
+    inline bool empty() const noexcept { return nodes_.empty(); }
+    inline std::size_t size() const noexcept { return nodes_.size(); }
 
     // Node functinos
 
@@ -57,12 +64,16 @@ public:
 
     iterator find(const Key &key);
     const_iterator find(const Key &key) const;
+    bool contains(const Key &key) const;
 
     std::pair<iterator, bool> emplace(const Key &key);
-    std::pair<iterator, bool> emplace(const Key &&key);
+    std::pair<iterator, bool> emplace(Key &&key);
     std::pair<iterator, bool> emplace(const Key &key, const node &node);
-    std::pair<iterator, bool> emplace(const Key &&key, const node &&node);
-    // remove node functions to be emplemented
+    std::pair<iterator, bool> emplace(Key &&key, node &&node);
+
+    std::size_t erase(const Key &key);
+    std::size_t erase(Key &&key);
+    iterator erase(iterator pos);
 
     // Edge functions
 
@@ -72,10 +83,12 @@ public:
     const Cost &operator()(const Key &key1, const Key &key2, const Cost &cost);
     // remove edge functions to be implemented
 
-
     bool isConnectedTo(iterator itNode1, iterator itNode2);
 
+
     // Algorithms functions
+
+
 
     // Iterators functinos
 
