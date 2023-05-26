@@ -23,14 +23,14 @@ template <class Key, class Data, class Cost = std::size_t, GraphType GT = undire
 class Graph {
 
 private:
-    using node = typename Node<Data, Cost>::Node;
-    using NodeSharedPtr = std::shared_ptr<Node<Data, Cost>>;
+    using node = typename Node<Data, Key, Cost>::Node;
+    using NodeSharedPtr = std::shared_ptr<node>;
     using MapNodes = std::map<Key, NodeSharedPtr>;
 
     MapNodes nodes_;
     Cost maxCost_;
 
-    GraphType getGraphType() { return GT; }
+    GraphType getGraphType() const { return GT; }
 
 public:
     // iterators
@@ -48,9 +48,10 @@ public:
     Graph(Graph &&other);
     ~Graph();
 
-    // merge *this with other (Graph with same tpyes) 
+    // merge nodes and edges of other with *this
+    // preserves nodes and edges in *this if nodes or links are alrady present
     // returns new size of *this
-    std::size_t mergeGraph(Graph<Key, Data, Cost, GT>& other);
+    std::size_t mergeGraph(const Graph<Key, Data, Cost, GT>& other);
 
     // Capacity
 
@@ -64,7 +65,7 @@ public:
 
     iterator find(const Key &key);
     const_iterator find(const Key &key) const;
-    bool contains(const Key &key) const;
+    bool contains(const Key &key) const { return find(key) == (*this).cend(); }
 
     std::pair<iterator, bool> emplace(const Key &key);
     std::pair<iterator, bool> emplace(Key &&key);

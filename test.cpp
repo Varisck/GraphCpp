@@ -98,20 +98,90 @@ int main() {
 		std::cout << "Fine scope!" << std::endl;
 	}
 
-	
-	UndirectedGraph<int, std::string> test;
+	{	
+		UndirectedGraph<int, std::string> test;
 
-	test[1] = "node 1";
-	test[2] = "node 2";
-	test[3] = "node 3";
+		test[1] = "node 1";
+		test[2] = "node 2";
+		test[3] = "node 3";
 
-	test(1, 2) = 12;
-	test(2, 1) = 21;
-	test(1, 3) = 13;
+		test(1, 2) = 12;
+		test(2, 1) = 21;
+		test(1, 3) = 13;
 
-	std::cout << "Cost between 1-2: " << test.find(1)->second->getEdgeCost(test.find(2)->second) << std::endl;
-	std::cout << "Size of the graph is: " << test.size() << " and the empty: " << test.empty() << std::endl;
+		std::cout << "Cost between 1-2: " << test.find(1)->second->getEdgeCost(test.find(2)->second) << std::endl;
+		std::cout << "Size of the graph is: " << test.size() << " and the empty: " << test.empty() << std::endl;
+
+		std::cout << "Key of node 1 in node element is: " << test.find(1)->second->getKeyInGraph() << std::endl;
+		std::cout << "End of scope 2" << std::endl;
+	}
+
+
+
+	{
+		UndirectedGraph<int, std::string> g1;
+		UndirectedGraph<int, std::string> g2;
+
+		g1[1] = "node 1";
+		g1[2] = "node 2";
+		g1[3] = "node 3";
+
+		g1(1, 2, 100);
+
+		g2[1] = "Node 1";
+		g2[2] = "Node 2";
+		g2[5] = "Node 5";
+
+		g2(1, 2) = 9000;
+		g2(1, 5, 500);
+
+		std::cout << "G1: " << std::endl;
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first << " value: " << node->second->getData() << std::endl;
+		}
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first;
+			for(auto edge = node->second->cbegin(); edge != node->second->cend(); ++edge){
+				if(auto nodeTo = edge->getNodeTo().lock())
+					std::cout << " connected to: " << nodeTo->getKeyInGraph() << " (" << edge->cost() << "), ";
+			}
+			std::cout << std::endl;
+		}
+
+		std::cout << "G2: " << std::endl;
+		for(auto node = g2.cbegin(); node != g2.cend(); ++node){
+			std::cout << "Key: " << node->first << " value: " << node->second->getData() << std::endl;
+		}
+		for(auto node = g2.cbegin(); node != g2.cend(); ++node){
+			std::cout << "Key: " << node->first;
+			for(auto edge = node->second->cbegin(); edge != node->second->cend(); ++edge){
+				if(auto nodeTo = edge->getNodeTo().lock())
+					std::cout << " connected to: " << nodeTo->getKeyInGraph() << " (" << edge->cost() << "), ";
+			}
+			std::cout << std::endl;
+		}
+
+		g1.mergeGraph(g2);
+
+		std::cout << "G1: " << std::endl;
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first << " value: " << node->second->getData() << std::endl;
+		}
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first;
+			for(auto edge = node->second->cbegin(); edge != node->second->cend(); ++edge){
+				if(auto nodeTo = edge->getNodeTo().lock())
+					std::cout << " connected to: " << nodeTo->getKeyInGraph() << " (" << edge->cost() << "), ";
+			}
+			std::cout << std::endl;
+		}
+
+
+	}
+
 
 	std::cout << "End program";
+
+
 	return 0;
 }

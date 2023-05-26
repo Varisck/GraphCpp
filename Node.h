@@ -6,7 +6,7 @@
 #include <cassert>
 #include <utility>
 
-template <class Data, class Cost = std::size_t>
+template <class Data, class Key, class Cost = std::size_t>
 class Node {
 
 	class edge {
@@ -21,13 +21,17 @@ class Node {
 
 			Cost& cost() const;
 			std::shared_ptr<Cost> costPtr() const;
+			std::weak_ptr<Node> getNodeTo() const { return nodeTo_; }
 
-		friend class Node<Data, Cost>;
+		friend class Node<Data, Key, Cost>;
 	};
 
-	private:
+		// list of edges connected to this node
 		std::list<edge> listEdges_;
+		// data in the node
 		Data data_;
+		// key to reference this node in the graph
+		Key key_;
 
 
 	public:
@@ -42,6 +46,8 @@ class Node {
 
 		using ListEdges = std::list<edge>;
 		using ListEdgesIterator = typename ListEdges::iterator;
+		using iterator = ListEdgesIterator;
+		using const_iterator = typename ListEdges::const_iterator;
 
 		// returns iterator to edge in list or _listEdge.end()
 		ListEdgesIterator findEdge(std::shared_ptr<Node> toPtr) {
@@ -76,6 +82,16 @@ class Node {
 			assert(isEdge(toPtr) == true);
 			return findEdge(toPtr)->cost();
 		}
+
+		void setKey(const Key &key) { key_ = key; }
+		Key& getKeyInGraph() { return key_; }
+
+		iterator begin() noexcept;
+		iterator end() noexcept;
+		const_iterator begin() const noexcept;
+		const_iterator end() const noexcept;
+		const_iterator cbegin() const noexcept;
+		const_iterator cend() const noexcept;
 
 };
 

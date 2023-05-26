@@ -18,18 +18,27 @@ Graph<Key, Data, Cost, GT>::~Graph() {
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
-std::size_t Graph<Key, Data, Cost, GT>::mergeGraph(Graph<Key, Data, Cost, GT>& other){
+std::size_t Graph<Key, Data, Cost, GT>::mergeGraph(const Graph<Key, Data, Cost, GT>& other){
 
-	if(*this.getGraphType() != other.getGraphType())
+	if((*this).getGraphType() != other.getGraphType())
 		return nodes_.size();
 
-	for(iterator it = other.start(); it != other.end(); ++it){
-		if(*this.contains(it->first)){
+	for(const_iterator it = other.cbegin(); it != other.cend(); ++it){
+		// putting node in *this
+		(*this).emplace(it->first, *it->second);
+	}
 
-		}else{
-
+	for(const_iterator it = other.cbegin(); it != other.cend(); ++it){
+		for(typename node::const_iterator link = it->second->cbegin(); link != it->second->cend(); ++link){
+			// add edges in node
+			if(auto adjNode = link->getNodeTo().lock()){
+				// check if link is not present in *this alrady
+				if(!(*this).find(it->first)->second->isEdge((*this).find(adjNode->getKeyInGraph())->second))
+					(*this)(it->second->getKeyInGraph(), adjNode->getKeyInGraph()) = link->cost();	
+			}
 		}
 	}
+
 	return nodes_.size();
 }
 
@@ -56,13 +65,17 @@ std::pair<typename Graph<Key, Data, Cost, GT>::iterator, bool> Graph<Key, Data, 
 template <class Key, class Data, class Cost, GraphType GT>
 std::pair<typename Graph<Key, Data, Cost, GT>::iterator, bool> Graph<Key, Data, Cost, GT>::emplace(const Key &key, const node &n) {
 	// std::cout << "copyed" << std::endl;
-	return nodes_.emplace(key, std::make_shared<node>(n));
+	std::pair<iterator, bool> pair{nodes_.emplace(key, std::make_shared<node>(n))};
+	pair.first->second->setKey(key);
+	return pair;
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
 std::pair<typename Graph<Key, Data, Cost, GT>::iterator, bool> Graph<Key, Data, Cost, GT>::emplace(Key &&key, node &&n) {
 	// std::cout << "moved" << std::endl;
-	return nodes_.emplace(std::move(key), std::move(std::make_shared<node>(n)));
+	std::pair<iterator, bool> pair{nodes_.emplace(std::move(key), std::move(std::make_shared<node>(n)))};
+	pair.first->second->setKey(key);
+	return pair;
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
@@ -81,11 +94,6 @@ typename Graph<Key, Data, Cost, GT>::iterator Graph<Key, Data, Cost, GT>::erase(
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
-bool Graph<Key, Data, Cost, GT>::contains(const Key &key) const {
-	return nodes_.contains(key);
-}
-
-template <class Key, class Data, class Cost, GraphType GT>
 typename Graph<Key, Data, Cost, GT>::iterator Graph<Key, Data, Cost, GT>::find(const Key &key) {
 	return nodes_.find(key);
 }
@@ -101,8 +109,8 @@ Cost &Graph<Key, Data, Cost, GT>::operator()(iterator itNode1, iterator itNode2)
 		return itNode1->second->getEdgeCost(itNode2->second);
 	}
 	else {
-		// if graph is undirected creates the reverse edge as well
-		if(getGraphType() == undirected){
+		// if graph is directed creates the reverse edge as well
+		if(getGraphType() == directed){
 			std::shared_ptr<Cost> costPtr = itNode1->second->add_edge(itNode2->second, maxCost_).first->costPtr();
 			itNode2->second->add_edge(itNode1->second, *costPtr);
 			return *costPtr;
