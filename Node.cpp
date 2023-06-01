@@ -59,7 +59,7 @@ Data& Node<Data, Key, Cost>::getData() const {
 
 template<class Data, class Key, class Cost>
 typename Node<Data, Key, Cost>::iterator Node<Data, Key, Cost>::begin() noexcept {
-	return listEdges_.start();
+	return listEdges_.begin();
 }
 
 template<class Data, class Key, class Cost>
@@ -69,7 +69,7 @@ typename Node<Data, Key, Cost>::iterator Node<Data, Key, Cost>::end() noexcept {
 
 template<class Data, class Key, class Cost>
 typename Node<Data, Key, Cost>::const_iterator Node<Data, Key, Cost>::begin() const noexcept {
-	return listEdges_.start();
+	return listEdges_.begin();
 }
 
 template<class Data, class Key, class Cost>

@@ -4,6 +4,8 @@
 #include <map>
 #include <utility>
 #include <limits>
+#include <list>
+#include <queue>
 
 #include "Node.h"
 
@@ -89,7 +91,16 @@ public:
 
     // Algorithms functions
 
+    void resetVisitData() {
+        for(iterator node = begin(); node != end(); ++node){
+            node->second->visitData().d = 0;
+            node->second->visitData().p.reset();
+            node->second->visitData().color = node::visitData::color::white;
+        }
+    }
 
+    std::pair<std::list<node>, std::size_t> bfs(const Key &start);
+    std::pair<std::list<node>, std::size_t> bfs(iterator start);
 
     // Iterators functinos
 

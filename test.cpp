@@ -176,6 +176,9 @@ int main() {
 			std::cout << std::endl;
 		}
 
+		// auto ptr = g1.begin()->second;
+		// std::shared_ptr<Node<std::string, int>> ptr2 = ptr;
+		g1.bfs(g1.begin());
 
 	}
 

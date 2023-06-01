@@ -148,6 +148,51 @@ bool Graph<Key, Data, Cost, GT>::isConnectedTo(iterator itNode1, iterator itNode
 	return itNode1->second->isEdge(itNode2->second);
 }
 
+// Algo
+
+template <class Key, class Data, class Cost, GraphType GT>
+std::pair<std::list<typename Graph<Key, Data, Cost, GT>::node>, std::size_t> Graph<Key, Data, Cost, GT>::bfs(const Key &start) {
+	iterator startIt{find(start)};
+	return bfs(startIt);
+}
+
+template <class Key, class Data, class Cost, GraphType GT>
+std::pair<std::list<typename Graph<Key, Data, Cost, GT>::node>, std::size_t> Graph<Key, Data, Cost, GT>::bfs(iterator start) {
+	// reset value of visitData in nodes
+	resetVisitData();
+	// set visit data of start
+	start->second->visitData().p.reset();
+	start->second->visitData().color =  node::visitData::color::gray;
+
+	std::queue<NodeSharedPtr> queue;
+	queue.push(start->second);
+
+	while(!queue.empty()){
+		NodeSharedPtr u = queue.front();
+		queue.pop();
+		for(typename node::iterator edge = u->begin(); edge != u->end(); ++edge){
+			if(auto adj = edge->getNodeTo().lock()){
+				if(adj->visitData().color == node::visitData::color::white){
+					adj->visitData().color = node::visitData::color::gray;
+					adj->visitData().d = u->visitData().d + 1;
+					adj->visitData().p = u;
+					queue.push(adj);
+				}
+			}
+		}
+		u->visitData().color = node::visitData::color::black;
+	}
+	return std::make_pair<std::list<node>, std::size_t>({}, 0);
+}
+
+
+
+
+
+
+
+
+
 template <class Key, class Data, class Cost, GraphType GT>
 typename Graph<Key, Data, Cost, GT>::iterator Graph<Key, Data, Cost, GT>::begin() noexcept {
 	return nodes_.begin();
