@@ -20,7 +20,6 @@ enum GraphType {
     Data = data stored in node
     Cost = cost type of edges
     GraphType = enumerate of graph
-
 */
 template <class Key, class Data, class Cost = std::size_t, GraphType GT = undirected>
 class Graph {
@@ -100,7 +99,7 @@ public:
     Cost &operator()(Key &&key1, Key &&key2);
     Cost &operator()(iterator n1, iterator n2);
     const Cost &operator()(const Key &key1, const Key &key2, const Cost &cost);
-    // remove edge functions to be implemented
+    // =======> remove edge functions to be implemented
 
     // check if to nodes are connected by an edge
     bool isConnectedTo(iterator itNode1, iterator itNode2);
@@ -109,10 +108,16 @@ public:
     // --- Algorithms functions ---
 
     // run bfs on start node returns data of visited nodes
-    std::map<Key, visitData> bfs(const Key &start);
-    std::map<Key, visitData> bfs(iterator start);
+    std::map<Key, visitData> bfs(const Key &start) const;
+    std::map<Key, visitData> bfs(const iterator start) const;
 
+    std::map<Key, visitData> dfs(const Key &start) const;
+    std::map<Key, visitData> dfs(const iterator start) const;
 
+    // =====> Floyd-Warshall
+    // =====> connected components
+    // =====> kruskal prim
+    // =====> dijakstra
 
     // --- Iterators functinos ---
 

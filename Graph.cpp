@@ -38,7 +38,7 @@ std::size_t Graph<Key, Data, Cost, GT>::mergeGraph(const Graph<Key, Data, Cost, 
 			}
 		}
 	}
-	
+
 	return nodes_.size();
 }
 
@@ -151,13 +151,13 @@ bool Graph<Key, Data, Cost, GT>::isConnectedTo(iterator itNode1, iterator itNode
 // Algorithms
 
 template <class Key, class Data, class Cost, GraphType GT>
-std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::bfs(const Key &start) {
+std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::bfs(const Key &start) const {
 	iterator startIt{find(start)};
 	return bfs(startIt);
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
-std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::bfs(iterator start) {
+std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::bfs(const iterator start) const {
 
 	// map holding data on visitedNodes 
 	std::map<Key, visitData> visitedNodes;
