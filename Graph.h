@@ -14,6 +14,7 @@ enum GraphType {
     directed
 };
 
+
 /*
     Key = key to reference the nodeValue
     Data = data stored in node
@@ -29,19 +30,29 @@ private:
     using NodeSharedPtr = std::shared_ptr<node>;
     using MapNodes = std::map<Key, NodeSharedPtr>;
 
+    // struct holding data for algorithms
+    struct visitData {
+        std::size_t d = 0; 
+        std::weak_ptr<node> p;
+        enum color {
+            white, gray, black
+        } color = white;
+    };
+
+
     MapNodes nodes_;
     Cost maxCost_;
 
     GraphType getGraphType() const { return GT; }
 
 public:
-    // iterators
+    // --- iterators ---
     using iterator = typename MapNodes::iterator;
     using const_iterator = typename MapNodes::const_iterator;
     using reverse_iterator = typename MapNodes::reverse_iterator;
     using const_reverse_iterator = typename MapNodes::const_reverse_iterator;
 
-    // Graph
+    // --- Graph ---
 
     explicit Graph();
     // cpy ctor
@@ -55,54 +66,55 @@ public:
     // returns new size of *this
     std::size_t mergeGraph(const Graph<Key, Data, Cost, GT>& other);
 
-    // Capacity
+    // --- Capacity ---
 
     inline bool empty() const noexcept { return nodes_.empty(); }
     inline std::size_t size() const noexcept { return nodes_.size(); }
 
-    // Node functinos
+    // --- Node functions ---
 
+    // return data of node by key
     Data &operator[](const Key &key);
     Data &operator[](Key &&key);
 
+    // find node in graph by key
     iterator find(const Key &key);
     const_iterator find(const Key &key) const;
     bool contains(const Key &key) const { return find(key) == (*this).cend(); }
 
+    // emplace key node in graph
     std::pair<iterator, bool> emplace(const Key &key);
     std::pair<iterator, bool> emplace(Key &&key);
     std::pair<iterator, bool> emplace(const Key &key, const node &node);
     std::pair<iterator, bool> emplace(Key &&key, node &&node);
 
+    // erase node in graph
     std::size_t erase(const Key &key);
     std::size_t erase(Key &&key);
     iterator erase(iterator pos);
 
-    // Edge functions
+    // --- Edge functions ---
 
+    // get cost of edge in graph, if no edge in graph creates it
     Cost &operator()(const Key &key1, const Key &key2);
     Cost &operator()(Key &&key1, Key &&key2);
     Cost &operator()(iterator n1, iterator n2);
     const Cost &operator()(const Key &key1, const Key &key2, const Cost &cost);
     // remove edge functions to be implemented
 
+    // check if to nodes are connected by an edge
     bool isConnectedTo(iterator itNode1, iterator itNode2);
 
 
-    // Algorithms functions
+    // --- Algorithms functions ---
 
-    void resetVisitData() {
-        for(iterator node = begin(); node != end(); ++node){
-            node->second->visitData().d = 0;
-            node->second->visitData().p.reset();
-            node->second->visitData().color = node::visitData::color::white;
-        }
-    }
+    // run bfs on start node returns data of visited nodes
+    std::map<Key, visitData> bfs(const Key &start);
+    std::map<Key, visitData> bfs(iterator start);
 
-    std::pair<std::list<node>, std::size_t> bfs(const Key &start);
-    std::pair<std::list<node>, std::size_t> bfs(iterator start);
 
-    // Iterators functinos
+
+    // --- Iterators functinos ---
 
     iterator begin() noexcept;
     iterator end() noexcept;

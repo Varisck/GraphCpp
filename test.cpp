@@ -178,8 +178,18 @@ int main() {
 
 		// auto ptr = g1.begin()->second;
 		// std::shared_ptr<Node<std::string, int>> ptr2 = ptr;
-		g1.bfs(g1.begin());
 
+		auto visitedNodes = g1.bfs(g1.begin());
+
+		auto test = visitedNodes.begin();
+
+		std::cout << "visitedNodes begin key " << test->first 
+			<< " color " << test->second.color 
+			<< " distance " << test->second.d << std::endl;
+
+		if(auto ptr = visitedNodes[2].p.lock())
+			std::cout << "predecessor of node key 2: " << ptr->getKeyInGraph() 
+			<< " at distance: " << visitedNodes[2].d << std::endl;
 	}
 
 

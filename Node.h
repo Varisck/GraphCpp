@@ -9,16 +9,6 @@
 
 template <class Data, class Key, class Cost = std::size_t>
 class Node {
-	public:
-
-	struct visitData {
-		std::size_t d = 0; 
-		std::weak_ptr<Node> p;		
-		enum color {
-			white, gray, black
-		} color = white;
-		friend class Node<Data, Key, Cost>;
-	};
 
 	private:
 	class edge {
@@ -44,7 +34,6 @@ class Node {
 		Data data_;
 		// key to reference this node in the graph
 		Key key_;
-		visitData visitData_;
 
 	public:
 		explicit Node();
@@ -55,8 +44,6 @@ class Node {
 
 		Data& getData();
 		Data& getData() const;
-
-		visitData& visitData() { return visitData_; }
 
 		using ListEdges = std::list<edge>;
 		using ListEdgesIterator = typename ListEdges::iterator;

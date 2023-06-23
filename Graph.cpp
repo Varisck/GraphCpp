@@ -23,8 +23,8 @@ std::size_t Graph<Key, Data, Cost, GT>::mergeGraph(const Graph<Key, Data, Cost, 
 	if((*this).getGraphType() != other.getGraphType())
 		return nodes_.size();
 
+	// merging nodes of other in this
 	for(const_iterator it = other.cbegin(); it != other.cend(); ++it){
-		// putting node in *this
 		(*this).emplace(it->first, *it->second);
 	}
 
@@ -32,13 +32,13 @@ std::size_t Graph<Key, Data, Cost, GT>::mergeGraph(const Graph<Key, Data, Cost, 
 		for(typename node::const_iterator link = it->second->cbegin(); link != it->second->cend(); ++link){
 			// add edges in node
 			if(auto adjNode = link->getNodeTo().lock()){
-				// check if link is not present in *this alrady
+				// check if edge is not present in *this alrady
 				if(!(*this).find(it->first)->second->isEdge((*this).find(adjNode->getKeyInGraph())->second))
 					(*this)(it->second->getKeyInGraph(), adjNode->getKeyInGraph()) = link->cost();	
 			}
 		}
 	}
-
+	
 	return nodes_.size();
 }
 
@@ -148,22 +148,25 @@ bool Graph<Key, Data, Cost, GT>::isConnectedTo(iterator itNode1, iterator itNode
 	return itNode1->second->isEdge(itNode2->second);
 }
 
-// Algo
+// Algorithms
 
 template <class Key, class Data, class Cost, GraphType GT>
-std::pair<std::list<typename Graph<Key, Data, Cost, GT>::node>, std::size_t> Graph<Key, Data, Cost, GT>::bfs(const Key &start) {
+std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::bfs(const Key &start) {
 	iterator startIt{find(start)};
 	return bfs(startIt);
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
-std::pair<std::list<typename Graph<Key, Data, Cost, GT>::node>, std::size_t> Graph<Key, Data, Cost, GT>::bfs(iterator start) {
-	// reset value of visitData in nodes
-	resetVisitData();
-	// set visit data of start
-	start->second->visitData().p.reset();
-	start->second->visitData().color =  node::visitData::color::gray;
+std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::bfs(iterator start) {
 
+	// map holding data on visitedNodes 
+	std::map<Key, visitData> visitedNodes;
+
+	// set visitData of starting node 
+	visitedNodes[start->first].p.reset();
+	visitedNodes[start->first].color = visitData::color::gray;
+
+	// queue holding nodes to visit
 	std::queue<NodeSharedPtr> queue;
 	queue.push(start->second);
 
@@ -172,17 +175,19 @@ std::pair<std::list<typename Graph<Key, Data, Cost, GT>::node>, std::size_t> Gra
 		queue.pop();
 		for(typename node::iterator edge = u->begin(); edge != u->end(); ++edge){
 			if(auto adj = edge->getNodeTo().lock()){
-				if(adj->visitData().color == node::visitData::color::white){
-					adj->visitData().color = node::visitData::color::gray;
-					adj->visitData().d = u->visitData().d + 1;
-					adj->visitData().p = u;
+				// if adj color is white (not visited)
+				if(visitedNodes.find(adj->getKeyInGraph()) == visitedNodes.end()){
+					visitedNodes[adj->getKeyInGraph()].color = visitData::color::gray;
+					visitedNodes[adj->getKeyInGraph()].d = visitedNodes[u->getKeyInGraph()].d + 1;
+					visitedNodes[adj->getKeyInGraph()].p = u;
 					queue.push(adj);
 				}
 			}
 		}
-		u->visitData().color = node::visitData::color::black;
+		visitedNodes[u->getKeyInGraph()].color = visitData::black;
 	}
-	return std::make_pair<std::list<node>, std::size_t>({}, 0);
+
+	return visitedNodes;
 }
 
 
