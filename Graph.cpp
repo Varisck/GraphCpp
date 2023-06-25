@@ -148,7 +148,7 @@ bool Graph<Key, Data, Cost, GT>::isConnectedTo(iterator itNode1, iterator itNode
 	return itNode1->second->isEdge(itNode2->second);
 }
 
-// Algorithms
+// ------ Algorithms ------
 
 template <class Key, class Data, class Cost, GraphType GT>
 std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::bfs(const Key &start) const {
@@ -190,12 +190,42 @@ std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, C
 	return visitedNodes;
 }
 
+template <class Key, class Data, class Cost, GraphType GT>
+std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::dfs(const Key &start) const {
+	const_iterator startIt{find(start)};
+	return dfs(startIt);
+}
 
+template <class Key, class Data, class Cost, GraphType GT>
+std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::dfs(const const_iterator start) const {
+	
+	std::map<Key, visitData> visitedNodes;
+	std::size_t time = 0;
+	visitedNodes[start->first].p.reset();
 
+	dfsVisit(visitedNodes, start, time);
 
+	return visitedNodes;
 
+}
 
-
+template <class Key, class Data, class Cost, GraphType GT>
+void Graph<Key, Data, Cost, GT>::dfsVisit(std::map<Key, visitData>& visitedNodes, const const_iterator current, std::size_t& time) const {
+	time += 1;
+	visitedNodes[current->first].d = time;
+	visitedNodes[current->first].color = visitData::color::gray;
+	for(typename node::const_iterator link = current->second->cbegin(); link != current->second->cend(); ++link){
+		if(auto adjNode = link->getNodeTo().lock()){										// check if pointer still exist
+			if(visitedNodes[adjNode->getKeyInGraph()].color == visitData::color::white){	// check if node has not been visited yet
+				visitedNodes[adjNode->getKeyInGraph()].p = current->second;
+				dfsVisit(visitedNodes, (*this).find(adjNode->getKeyInGraph()), time);		// call dfsVisit on corresponding iterator of adjNode
+			}
+		}				
+	}
+	visitedNodes[current->first].color = visitData::color::black;
+	time += 1;
+	visitedNodes[current->first].f = time;
+}
 
 
 template <class Key, class Data, class Cost, GraphType GT>

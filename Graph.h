@@ -32,6 +32,7 @@ private:
     // struct holding data for algorithms
     struct visitData {
         std::size_t d = 0; 
+        std::size_t f = 0;
         std::weak_ptr<node> p;
         enum color {
             white, gray, black
@@ -112,12 +113,16 @@ public:
     std::map<Key, visitData> bfs(const iterator start) const;
 
     std::map<Key, visitData> dfs(const Key &start) const;
-    std::map<Key, visitData> dfs(const iterator start) const;
+    std::map<Key, visitData> dfs(const const_iterator start) const;
+
+    void dfsVisit(std::map<Key, visitData>& visitedNodes, const const_iterator node, std::size_t& time) const;
+
 
     // =====> Floyd-Warshall
     // =====> connected components
     // =====> kruskal prim
     // =====> dijakstra
+    // =====> bfsd
 
     // --- Iterators functinos ---
 

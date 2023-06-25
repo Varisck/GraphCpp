@@ -179,6 +179,8 @@ int main() {
 		// auto ptr = g1.begin()->second;
 		// std::shared_ptr<Node<std::string, int>> ptr2 = ptr;
 
+		std::cout << "BFS start on g1" << std::endl;
+
 		auto visitedNodes = g1.bfs(g1.begin());
 
 		auto test = visitedNodes.begin();
@@ -190,6 +192,17 @@ int main() {
 		if(auto ptr = visitedNodes[2].p.lock())
 			std::cout << "predecessor of node key 2: " << ptr->getKeyInGraph() 
 			<< " at distance: " << visitedNodes[2].d << std::endl;
+
+		std::cout << "BFS end" << std::endl << "DFS start g1" << std::endl; 
+
+		auto visitedNodesDFS = g1.dfs(g1.begin());
+
+		for(auto it = visitedNodesDFS.begin(); it != visitedNodesDFS.end(); ++it){
+			std::cout << "Node Key: " << it->first << " d: " << it->second.d << " f: " << it->second.f << std::endl;
+		}
+
+		std::cout << "DFS end" << std::endl;
+
 	}
 
 
