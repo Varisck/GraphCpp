@@ -18,13 +18,14 @@ enum GraphType {
 /*
     Key = key to reference the nodeValue
     Data = data stored in node
-    Cost = cost type of edges
+    Cost = cost type of edges (default std::size_t)
     GraphType = enumerate of graph
 */
 template <class Key, class Data, class Cost = std::size_t, GraphType GT = undirected>
 class Graph {
 
 private:
+    // --- Definitions ---
     using node = typename Node<Data, Key, Cost>::Node;
     using NodeSharedPtr = std::shared_ptr<node>;
     using MapNodes = std::map<Key, NodeSharedPtr>;
@@ -39,7 +40,7 @@ private:
         } color = white;
     };
 
-
+    // --- Member data ---
     MapNodes nodes_;
     Cost maxCost_;
 
@@ -51,6 +52,7 @@ public:
     using const_iterator = typename MapNodes::const_iterator;
     using reverse_iterator = typename MapNodes::reverse_iterator;
     using const_reverse_iterator = typename MapNodes::const_reverse_iterator;
+
 
     // --- Graph ---
 
@@ -66,10 +68,12 @@ public:
     // returns new size of *this
     std::size_t mergeGraph(const Graph<Key, Data, Cost, GT>& other);
 
+
     // --- Capacity ---
 
     inline bool empty() const noexcept { return nodes_.empty(); }
     inline std::size_t size() const noexcept { return nodes_.size(); }
+
 
     // --- Node functions ---
 
@@ -93,6 +97,7 @@ public:
     std::size_t erase(Key &&key);
     iterator erase(iterator pos);
 
+
     // --- Edge functions ---
 
     // get cost of edge in graph, if no edge in graph creates it
@@ -114,7 +119,6 @@ public:
 
     std::map<Key, visitData> dfs(const Key &start) const;
     std::map<Key, visitData> dfs(const const_iterator start) const;
-
     void dfsVisit(std::map<Key, visitData>& visitedNodes, const const_iterator node, std::size_t& time) const;
 
 
@@ -123,6 +127,7 @@ public:
     // =====> kruskal prim
     // =====> dijakstra
     // =====> bfsd
+
 
     // --- Iterators functinos ---
 
@@ -145,7 +150,8 @@ public:
     const_reverse_iterator crend() const noexcept;
 };
 
-// definition of graphs
+
+// --- Graphs definitions ---
 template <class Key, class Data, class Cost = std::size_t>
 using DirectedGraph = Graph<Key, Data, Cost, directed>;
 
