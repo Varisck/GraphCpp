@@ -203,6 +203,45 @@ int main() {
 
 		std::cout << "DFS end" << std::endl;
 
+		std::cout << "G1: " << g1.size() << std::endl;
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first << " value: " << node->second->getData() << std::endl;
+		}
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first;
+			for(auto edge = node->second->cbegin(); edge != node->second->cend(); ++edge){
+				if(auto nodeTo = edge->getNodeTo().lock())
+					std::cout << " connected to: " << nodeTo->getKeyInGraph() << " (" << edge->cost() << "), ";
+			}
+			std::cout << std::endl;
+		}
+
+		std::cout << "Removing node 5: " << std::endl;
+
+		g1.erase(5);
+
+		std::cout << "G1: " << g1.size() << std::endl;
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first << " value: " << node->second->getData() << std::endl;
+		}
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first;
+			for(auto edge = node->second->cbegin(); edge != node->second->cend(); ++edge){
+				if(auto nodeTo = edge->getNodeTo().lock())
+					std::cout << " connected to: " << nodeTo->getKeyInGraph() << " (" << edge->cost() << "), ";
+			}
+			std::cout << std::endl;
+		}
+
+		std::vector<std::vector<std::size_t>> res = g1.floydWarshall();
+
+		for(int i = 0; i < g1.size(); ++i){
+			for(int j = 0; j < g1.size(); ++j){
+				std::cout << res[i][j] << " ";
+			}
+			std::cout << std::endl;
+		}
+
 	}
 
 
