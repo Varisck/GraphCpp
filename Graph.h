@@ -121,9 +121,10 @@ public:
     std::map<Key, visitData> dfs(const const_iterator start) const;
     void dfsVisit(std::map<Key, visitData>& visitedNodes, const const_iterator node, std::size_t& time) const;
 
-    // =====> Floyd-Warshall
-
-    // returns a 1 dimensional array rapresenting the floydWarhall matrix
+    // coputes all the floydWarshall matrices
+    std::vector<Cost> computeFloydWarshall();
+    // returns a 1 dimensional array rapresenting 
+    // the last matrix using floydWarhall 
     std::vector<Cost> floydWarshall();
 
     // =====> dijakstra

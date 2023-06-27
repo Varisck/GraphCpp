@@ -228,7 +228,7 @@ void Graph<Key, Data, Cost, GT>::dfsVisit(std::map<Key, visitData>& visitedNodes
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
-std::vector<Cost> Graph<Key, Data, Cost, GT>::floydWarshall() {
+std::vector<Cost> Graph<Key, Data, Cost, GT>::computeFloydWarshall() {
 
 	std::size_t size = (*this).size();
 	std::vector<Cost> d(size * size * size, maxCost_);	// rapresenting a matrix n^3
@@ -260,11 +260,16 @@ std::vector<Cost> Graph<Key, Data, Cost, GT>::floydWarshall() {
 		}
 	}
 
+	return d;
+}
+
+template <class Key, class Data, class Cost, GraphType GT>
+std::vector<Cost> Graph<Key, Data, Cost, GT>::floydWarshall() {
+	std::size_t size = (*this).size();
+	std::vector<Cost> d = computeFloydWarshall();
 	std::vector<Cost> res(d.begin() + (size * size * (size - 1)), d.begin() + (size * size * size));
 	return res;
 }
-
-
 
 template <class Key, class Data, class Cost, GraphType GT>
 typename Graph<Key, Data, Cost, GT>::iterator Graph<Key, Data, Cost, GT>::begin() noexcept {
