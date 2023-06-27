@@ -233,11 +233,11 @@ int main() {
 			std::cout << std::endl;
 		}
 
-		std::vector<std::vector<std::size_t>> res = g1.floydWarshall();
+		std::vector<std::size_t> res = g1.floydWarshall();
 
 		for(int i = 0; i < g1.size(); ++i){
 			for(int j = 0; j < g1.size(); ++j){
-				std::cout << res[i][j] << " ";
+				std::cout << res[i * g1.size() + j] << " ";
 			}
 			std::cout << std::endl;
 		}

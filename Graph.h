@@ -123,7 +123,8 @@ public:
 
     // =====> Floyd-Warshall
 
-    std::vector<std::vector<Cost>> floydWarshall();
+    // returns a 1 dimensional array rapresenting the floydWarhall matrix
+    std::vector<Cost> floydWarshall();
 
     // =====> dijakstra
     // =====> connected components

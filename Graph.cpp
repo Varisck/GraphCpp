@@ -228,10 +228,10 @@ void Graph<Key, Data, Cost, GT>::dfsVisit(std::map<Key, visitData>& visitedNodes
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
-std::vector<std::vector<Cost>> Graph<Key, Data, Cost, GT>::floydWarshall() {
+std::vector<Cost> Graph<Key, Data, Cost, GT>::floydWarshall() {
 
 	std::size_t size = (*this).size();
-	std::vector<std::vector<std::vector<Cost>>> d(size, std::vector(size, std::vector(size, maxCost_)));	// rapresenting a matrix n^3
+	std::vector<Cost> d(size * size * size, maxCost_);	// rapresenting a matrix n^3
 
 	for(std::size_t i = 0; i < size; ++i){
 		for(std::size_t j = 0; j < size; ++j){
@@ -242,7 +242,7 @@ std::vector<std::vector<Cost>> Graph<Key, Data, Cost, GT>::floydWarshall() {
 			for(std::size_t jit = 0; jit < j; ++jit)
 				++n2;
 			if(isConnectedTo(n1, n2)){
-				d[0][i][j] = (*this)(n1, n2);
+				d[j + i * size] = (*this)(n1, n2);
 			}
 		}
 	}
@@ -250,53 +250,19 @@ std::vector<std::vector<Cost>> Graph<Key, Data, Cost, GT>::floydWarshall() {
 	for(std::size_t k = 1; k < size; ++k){					
 		for(std::size_t i = 0; i < size; ++i){
 			for(std::size_t j = 0; j < size; ++j){
-				Cost d_i_j_kll = d[k - 1][i][j];
-				Cost d_i_k_k_j = d[k - 1][i][k] + d[k - 1][k][j];
-				if(d_i_j_kll > d_i_k_k_j)
-					d[k][i][j] = d_i_k_k_j;
+				Cost d_i_j_kll = d[j + i * size + (k - 1) * size * size];
+				Cost d_i_k_k_j = d[i + k * size + (k - 1) * size * size] + d[k + j * size + (k - 1) * size * size];
+				if(d_i_j_kll > d_i_k_k_j && d[i + k * size + (k - 1) * size * size] != maxCost_ && d[k + j * size + (k - 1) * size * size] != maxCost_)
+					d[j + i * size + k * size * size] = d_i_k_k_j;
 				else
-					d[k][i][j] = d_i_j_kll;					
+					d[j + i * size + k * size * size] = d_i_j_kll;					
 			}
 		}
 	}
 
-	std::vector<std::vector<Cost>> res(d[size - 1].begin(), d[size - 1].end());
+	std::vector<Cost> res(d.begin() + (size * size * (size - 1)), d.begin() + (size * size * size));
 	return res;
-
-	// std::size_t size = (*this).size();
-	// std::vector<Cost> d(size * size * size, maxCost_);	// rapresenting a matrix n^3
-
-	// for(std::size_t i = 0; i < size; ++i){
-	// 	for(std::size_t j = 0; j < size; ++j){
-	// 		iterator n1 = (*this).begin();
-	// 		iterator n2 = (*this).begin();
-	// 		for(std::size_t iit = 0; iit < i; ++iit)
-	// 			++n1;
-	// 		for(std::size_t jit = 0; jit < j; ++jit)
-	// 			++n2;
-	// 		if(isConnectedTo(n1, n2)){
-	// 			d[j + i * size] = (*this)(n1, n2);
-	// 		}
-	// 	}
-	// }
-
-	// for(std::size_t k = 1; k < size; ++k){					
-	// 	for(std::size_t i = 0; i < size; ++i){
-	// 		for(std::size_t j = 0; j < size; ++j){
-	// 			Cost d_i_j_kll = d[j + i * size + (k - 1) * size * size];
-	// 			Cost d_i_k_k_j = d[i + k * size + (k - 1) * size * size] + d[k + j * size + (k - 1) * size * size];
-	// 			if(d_i_j_kll > d_i_k_k_j)
-	// 				d[j + i * size + k * size * size] = d_i_k_k_j;
-	// 			else
-	// 				d[j + i * size + k * size * size] = d_i_j_kll;					
-	// 		}
-	// 	}
-	// }
-
-	// std::vector<Cost> res(d.begin() + (size * size * (size - 1)), d.begin() + (size * size * size));
-	// return res;
 }
-
 
 
 
