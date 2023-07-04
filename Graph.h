@@ -2,10 +2,12 @@
 #define GRAPH_GRAPH_H_
 
 #include <map>
-#include <utility>
-#include <limits>
+#include <utility>          // std::size_t, std::pair
+#include <limits>           // std::numeric_limits<T>
 #include <list>
 #include <queue>
+#include <functional>       // std::greater<T>
+
 
 #include "Node.h"
 
@@ -23,7 +25,6 @@ enum GraphType {
 */
 template <class Key, class Data, class Cost = std::size_t, GraphType GT = undirected>
 class Graph {
-
 private:
     // --- Definitions ---
     using node = typename Node<Data, Key, Cost>::Node;
@@ -108,7 +109,7 @@ public:
     // =======> remove edge functions to be implemented
 
     // check if to nodes are connected by an edge
-    bool isConnectedTo(iterator itNode1, iterator itNode2);
+    bool isConnectedTo(iterator itNode1, iterator itNode2) const;
 
 
     // --- Algorithms functions ---
@@ -124,10 +125,12 @@ public:
     // coputes all the floydWarshall matrices
     std::vector<Cost> computeFloydWarshall();
     // returns a 1 dimensional array rapresenting 
-    // the last matrix using floydWarhall 
+    // the last matrix of floydWarhall algorithm
     std::vector<Cost> floydWarshall();
 
-    // =====> dijakstra
+    std::map<Key, visitData> dijkstra(const Key &start) const;
+    std::map<Key, visitData> dijkstra(const const_iterator start) const;
+
     // =====> connected components
     // =====> kruskal prim
     // =====> bfsd

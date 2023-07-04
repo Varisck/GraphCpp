@@ -242,6 +242,34 @@ int main() {
 			std::cout << std::endl;
 		}
 
+		std::cout << std::endl;
+		std::cout << std::endl;
+		std::cout << std::endl;
+
+		std::cout << "G1: " << g1.size() << std::endl;
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first << " value: " << node->second->getData() << std::endl;
+		}
+		for(auto node = g1.cbegin(); node != g1.cend(); ++node){
+			std::cout << "Key: " << node->first;
+			for(auto edge = node->second->cbegin(); edge != node->second->cend(); ++edge){
+				if(auto nodeTo = edge->getNodeTo().lock())
+					std::cout << " connected to: " << nodeTo->getKeyInGraph() << " (" << edge->cost() << "), ";
+			}
+			std::cout << std::endl;
+		}
+
+		std::cout << "dijkstra start" << std::endl;
+
+		auto djres = g1.dijkstra(g1.begin());
+
+		for(auto it = djres.begin(); it != djres.end(); ++it){
+			std::cout << "Node Key: " << it->first << " d: " << it->second.d << " f: " << it->second.f << std::endl;
+		}
+
+
+		std::cout << "dijkstra end" << std::endl;
+
 	}
 
 

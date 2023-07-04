@@ -1,5 +1,4 @@
 #include "Graph.h"
-#include <iostream>
 
 template <class Key, class Data, class Cost, GraphType GT>
 Graph<Key, Data, Cost, GT>::Graph() {
@@ -144,7 +143,7 @@ const Cost &Graph<Key, Data, Cost, GT>::operator()(const Key &key1, const Key &k
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
-bool Graph<Key, Data, Cost, GT>::isConnectedTo(iterator itNode1, iterator itNode2) {
+bool Graph<Key, Data, Cost, GT>::isConnectedTo(iterator itNode1, iterator itNode2) const {
 	return itNode1->second->isEdge(itNode2->second);
 }
 
@@ -178,7 +177,7 @@ std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, C
 				// if adj color is white (not visited)
 				if(visitedNodes.find(adj->getKeyInGraph()) == visitedNodes.end()){
 					visitedNodes[adj->getKeyInGraph()].color = visitData::color::gray;
-					visitedNodes[adj->getKeyInGraph()].d = visitedNodes[u->getKeyInGraph()].d + 1;
+					visitedNodes[adj->getKeyInGraph()].d = visitedNodes[u->getKeyInGraph()].d + edge->cost();
 					visitedNodes[adj->getKeyInGraph()].p = u;
 					queue.push(adj);
 				}
@@ -270,6 +269,68 @@ std::vector<Cost> Graph<Key, Data, Cost, GT>::floydWarshall() {
 	std::vector<Cost> res(d.begin() + (size * size * (size - 1)), d.begin() + (size * size * size));
 	return res;
 }
+
+template <class Key, class Data, class Cost, GraphType GT>
+std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::dijkstra(const Key &start) const {
+	const_iterator startIt{find(start)};
+	return dijkstra(startIt);
+}
+
+template <class Key, class Data, class Cost, GraphType GT>
+std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, Cost, GT>::dijkstra(const const_iterator start) const {
+	std::map<Key, visitData> visitedNodes;
+	visitedNodes[start->first].d = 0;
+
+	auto customCompare = [](const std::pair<Key, Cost>& v1, const std::pair<Key, Cost>& v2) {
+		return std::greater<Cost>()(v1.second, v2.second);
+	};
+
+	std::priority_queue<
+		std::pair<Key, Cost>,
+		std::vector<std::pair<Key, Cost>>,
+		decltype(customCompare)> queue(customCompare);
+
+
+	queue.push(std::make_pair(start->first, 0));
+
+	while(!queue.empty()){
+		std::pair<Key, Cost> n = queue.top();
+		queue.pop();
+		if(visitedNodes[n.first].d == n.second){
+			const_iterator nIt = (*this).find(n.first);							// iterator of n in graph
+			for(typename node::const_iterator edge = nIt->second->cbegin(); edge != nIt->second->cend(); ++edge){
+				if(auto adjNode = edge->getNodeTo().lock()){
+					auto adjKey = adjNode->getKeyInGraph();
+					// if node not in queue or cost to travel is bigger then new path found
+					if(visitedNodes.find(adjKey) == visitedNodes.end() || visitedNodes[adjKey].d > visitedNodes[n.first].d + edge->cost()){
+						visitedNodes[adjKey].d = visitedNodes[n.first].d + edge->cost();	// cost to reach adj = n + edge(n, adj)
+						visitedNodes[adjKey].p = nIt->second;		// p of adj is n
+						queue.push(std::make_pair(adjKey, visitedNodes[adjKey].d));
+					}
+				}
+			}
+		}
+	}
+	return visitedNodes;
+
+
+	// modify this add nodes while traversing the adj nodes in algorithm
+	// for(const_iterator it = cbegin(); it != cend(); ++it){
+	// 	if(it != start){
+	// 		if(isConnectedTo(start, it)){
+	// 			priority_queue.push(std::make_pair(it->first, (*this)(start, it)));
+	// 		}else{
+	// 			priority_queue.push(std::make_pair(it->first, maxCost_));
+	// 		}
+	// 	}
+	// }
+
+}
+
+
+
+
+// --- iterators ---
 
 template <class Key, class Data, class Cost, GraphType GT>
 typename Graph<Key, Data, Cost, GT>::iterator Graph<Key, Data, Cost, GT>::begin() noexcept {
