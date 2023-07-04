@@ -33,7 +33,7 @@ private:
 
     // struct holding data for algorithms
     struct visitData {
-        std::size_t d = 0; 
+        Cost d = 0; 
         std::size_t f = 0;
         std::weak_ptr<node> p;
         enum color {

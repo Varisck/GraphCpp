@@ -1,5 +1,6 @@
 #include "Graph.h"
 #include <iostream>
+#include <random>
 
 struct W {
 	int _val;
@@ -272,9 +273,83 @@ int main() {
 
 	}
 
+	{
+
+		Graph<int, int> testG;
+		for(int i = 1; i < 7; ++i){
+			testG[i] = i;
+		}
+
+		testG(1, 2) = 10;
+		testG(1, 4) = 11;
+		testG(2, 3) = 12;
+		testG(3, 4) = 7;
+		testG(4, 5) = 3;
+		testG(4, 6) = 4;
+		testG(5, 6) = 0;
+
+	    auto resdjt = testG.dijkstra(testG.begin());
+	    auto resbfst = testG.bfs(testG.begin());
+
+		for(auto it = resdjt.begin(); it != resdjt.end(); ++it){
+			std::cout << "Node Key: " << it->first << " d: " << it->second.d << " d (bfs): " << resbfst[it->first].d << std::endl;
+		}
+
+		if(auto n = resbfst[6].p.lock())
+			std::cout << "p of 6 in bfs: " << n->getKeyInGraph() << std::endl;
+		if(auto n = resbfst[4].p.lock())
+			std::cout << "p of 4 in bfs: " << n->getKeyInGraph() << std::endl;
+
+
+	}
+
+
+	{
+		// huge graph
+	    // Create a graph with int keys, double data, and float costs
+	    Graph<int, double, float> myGraph;
+
+	    // Create a random number generator for generating node data
+	    std::random_device rd;
+	    std::mt19937 gen(rd());
+	    std::uniform_real_distribution<> dis(0.0, 100.0);
+
+	    // Create a large graph with 10,000 nodes
+	    const int numNodes = 10000;
+	    for (int i = 1; i <= numNodes; ++i) {
+	        double nodeData = dis(gen); // Generate random node data
+	        myGraph.emplace(i, nodeData); // Add node to the graph
+	    }
+
+	    // Connect nodes randomly with edges
+	    std::uniform_int_distribution<> nodeDist(1, numNodes);
+	    std::uniform_real_distribution<> costDist(1.0, 10.0);
+	    const int numEdges = 50000; // Total number of edges to create
+
+	    for (int i = 0; i < numEdges; ++i) {
+	        int node1 = nodeDist(gen);
+	        int node2 = nodeDist(gen);
+	        float cost = costDist(gen);
+
+	        // Add an edge between the two randomly chosen nodes with a random cost
+	        myGraph(node1, node2) = cost;
+	    }
+
+	    // Print the size of the graph
+	    std::cout << "Graph size: " << myGraph.size() << std::endl;
+
+
+	    auto hugeres = myGraph.dijkstra(myGraph.begin());
+	    auto resbfs = myGraph.bfs(myGraph.begin());
+
+		for(auto it = hugeres.begin(); it != hugeres.end(); ++it){
+			std::cout << "Node Key: " << it->first << " d: " << it->second.d << " d (bfs): " << resbfs[it->first].d << std::endl;
+		}
+
+
+	}
 
 	std::cout << "End program";
-
 
 	return 0;
 }

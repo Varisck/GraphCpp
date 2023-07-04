@@ -312,19 +312,6 @@ std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, C
 		}
 	}
 	return visitedNodes;
-
-
-	// modify this add nodes while traversing the adj nodes in algorithm
-	// for(const_iterator it = cbegin(); it != cend(); ++it){
-	// 	if(it != start){
-	// 		if(isConnectedTo(start, it)){
-	// 			priority_queue.push(std::make_pair(it->first, (*this)(start, it)));
-	// 		}else{
-	// 			priority_queue.push(std::make_pair(it->first, maxCost_));
-	// 		}
-	// 	}
-	// }
-
 }
 
 
