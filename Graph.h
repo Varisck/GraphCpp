@@ -107,6 +107,7 @@ public:
     const Cost &operator()(const Key &key1, const Key &key2, const Cost &cost);
     // have to manage the () operator with the undirected graph 
     // maybe return std::pair<Cost, bool> ????
+    // to fix return value
     bool removeEdge(const Key &key1, const Key &key2);
     bool removeEdge(const_iterator it1, const_iterator it2);
 

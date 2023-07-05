@@ -156,6 +156,9 @@ bool Graph<Key, Data, Cost, GT>::removeEdge(const_iterator it1, const_iterator i
 		return false;
 
 	it1->second->removeEdge(it2->second);
+	if(getGraphType() == undirected)
+		it2->second->removeEdge(it1->second);
+	//fix return value 
 	return true;
 }
 
