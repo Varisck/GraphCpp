@@ -178,7 +178,7 @@ bool Graph<Key, Data, Cost, GT>::isConnectedTo(Key &&key1, Key &&key2) const {
 
 template <class Key, class Data, class Cost, GraphType GT>
 bool Graph<Key, Data, Cost, GT>::isConnectedTo(const_iterator itNode1, const_iterator itNode2) const {
-	return itNode1->second->isEdge(itNode2->second);
+	return itNode1 != cend() && itNode2 != cend() && itNode1->second->isEdge(itNode2->second);
 }
 
 // ------ Algorithms ------

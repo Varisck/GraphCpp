@@ -366,20 +366,21 @@ int main() {
 
 		std::cout << "directedG test: " << std::endl;
 		DirectedGraph<int, int> testptr2;
-		testptr[1] = 1;
-		testptr[2] = 2;
+		testptr2[1] = 1;
+		testptr2[2] = 2;
 
-		testptr(1, 2) = 10;
+		testptr2(1, 2) = 10;
 
-		std::cout << testptr(1, 2) << "  " << testptr(2, 1) << std::endl;
+		std::cout << testptr2(1, 2) << "  " << testptr2(2, 1) << std::endl;
 
-		std::cout << testptr.begin()->second->findEdge(testptr.find(2)->second)->costPtr().use_count() << std::endl;
+		std::cout << testptr2.begin()->second->findEdge(testptr2.find(2)->second)->costPtr().use_count() << std::endl;
 
 
 		std::cout << "Test removig endge: " << std::endl;
-		std::cout << "isConnectedTo(1, 2): " << testptr.isConnectedTo(1, 2) << std::endl;	
-		testptr.removeEdge(1, 2);
-		std::cout << "isConnectedTo(1, 2): " << testptr.isConnectedTo(1, 2) << std::endl;	
+		std::cout << "isConnectedTo(1, 2): " << testptr2.isConnectedTo(1, 2) << std::endl;	
+		testptr2.removeEdge(1, 2);
+		std::cout << "isConnectedTo(1, 2): " << testptr2.isConnectedTo(1, 2) << std::endl;	
+		std::cout << testptr2.find(2)->second->findEdge(testptr2.find(1)->second)->costPtr().use_count() << std::endl;
 
 	}
 

@@ -84,7 +84,7 @@ public:
     // find node in graph by key
     iterator find(const Key &key);
     const_iterator find(const Key &key) const;
-    bool contains(const Key &key) const { return find(key) == (*this).cend(); }
+    bool contains(const Key &key) const { return find(key) != (*this).cend(); }
 
     // emplace key node in graph
     std::pair<iterator, bool> emplace(const Key &key);
