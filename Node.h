@@ -1,11 +1,10 @@
 #ifndef GRAPH_NODE_H_
 #define GRAPH_NODE_H_
 
-#include <memory>
-#include <list>
+#include <memory>		// std::shared_ptr, std::weak_ptr
+#include <list>			
+#include <utility>		// std::size_t
 #include <cassert>
-#include <utility>
-
 
 template <class Data, class Key, class Cost = std::size_t>
 class Node {
@@ -77,6 +76,22 @@ class Node {
 
 			listEdges_.emplace_back(std::weak_ptr<Node>(toPtr), cost);
 			return std::make_pair(--listEdges_.end(), true);
+		}
+
+		void removeEdge(std::shared_ptr<Node> toPtr){
+			assert(toPtr != nullptr);
+
+			auto myPred = [&toPtr](edge& e) { 
+				if(auto adj = e.getNodeTo().lock()){
+					if(adj->getKeyInGraph() == toPtr->getKeyInGraph())
+						return true;
+					return false;
+				}
+				return true;
+			};
+
+			listEdges_.remove_if(myPred);
+
 		}
 
 		Cost& getEdgeCost(std::shared_ptr<Node> toPtr){

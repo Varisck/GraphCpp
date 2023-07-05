@@ -304,50 +304,85 @@ int main() {
 	}
 
 
+	// {
+	// 	// huge graph
+	//     // Create a graph with int keys, double data, and float costs
+	//     Graph<int, double, float> myGraph;
+
+	//     // Create a random number generator for generating node data
+	//     std::random_device rd;
+	//     std::mt19937 gen(rd());
+	//     std::uniform_real_distribution<> dis(0.0, 100.0);
+
+	//     // Create a large graph with 10,000 nodes
+	//     const int numNodes = 10000;
+	//     for (int i = 1; i <= numNodes; ++i) {
+	//         double nodeData = dis(gen); // Generate random node data
+	//         myGraph.emplace(i, nodeData); // Add node to the graph
+	//     }
+
+	//     // Connect nodes randomly with edges
+	//     std::uniform_int_distribution<> nodeDist(1, numNodes);
+	//     std::uniform_real_distribution<> costDist(1.0, 10.0);
+	//     const int numEdges = 50000; // Total number of edges to create
+
+	//     for (int i = 0; i < numEdges; ++i) {
+	//         int node1 = nodeDist(gen);
+	//         int node2 = nodeDist(gen);
+	//         float cost = costDist(gen);
+
+	//         // Add an edge between the two randomly chosen nodes with a random cost
+	//         myGraph(node1, node2) = cost;
+	//     }
+
+	//     // Print the size of the graph
+	//     std::cout << "Graph size: " << myGraph.size() << std::endl;
+
+
+	//     auto hugeres = myGraph.dijkstra(myGraph.begin());
+	//     auto resbfs = myGraph.bfs(myGraph.begin());
+
+	// 	for(auto it = hugeres.begin(); it != hugeres.end(); ++it){
+	// 		std::cout << "Node Key: " << it->first << " d: " << it->second.d << " d (bfs): " << resbfs[it->first].d << std::endl;
+	// 	}
+
+
+	// }
+
+
 	{
-		// huge graph
-	    // Create a graph with int keys, double data, and float costs
-	    Graph<int, double, float> myGraph;
 
-	    // Create a random number generator for generating node data
-	    std::random_device rd;
-	    std::mt19937 gen(rd());
-	    std::uniform_real_distribution<> dis(0.0, 100.0);
+		std::cout << "undirectedG test: " << std::endl;
+		UndirectedGraph<int, int> testptr;
 
-	    // Create a large graph with 10,000 nodes
-	    const int numNodes = 10000;
-	    for (int i = 1; i <= numNodes; ++i) {
-	        double nodeData = dis(gen); // Generate random node data
-	        myGraph.emplace(i, nodeData); // Add node to the graph
-	    }
+		testptr[1] = 1;
+		testptr[2] = 2;
 
-	    // Connect nodes randomly with edges
-	    std::uniform_int_distribution<> nodeDist(1, numNodes);
-	    std::uniform_real_distribution<> costDist(1.0, 10.0);
-	    const int numEdges = 50000; // Total number of edges to create
+		testptr(1, 2) = 10;
 
-	    for (int i = 0; i < numEdges; ++i) {
-	        int node1 = nodeDist(gen);
-	        int node2 = nodeDist(gen);
-	        float cost = costDist(gen);
+		std::cout << testptr(1, 2) << "  " << testptr(2, 1) << std::endl;
 
-	        // Add an edge between the two randomly chosen nodes with a random cost
-	        myGraph(node1, node2) = cost;
-	    }
+		std::cout << testptr.begin()->second->findEdge(testptr.find(2)->second)->costPtr().use_count() << std::endl;
 
-	    // Print the size of the graph
-	    std::cout << "Graph size: " << myGraph.size() << std::endl;
+		std::cout << "directedG test: " << std::endl;
+		DirectedGraph<int, int> testptr2;
+		testptr[1] = 1;
+		testptr[2] = 2;
+
+		testptr(1, 2) = 10;
+
+		std::cout << testptr(1, 2) << "  " << testptr(2, 1) << std::endl;
+
+		std::cout << testptr.begin()->second->findEdge(testptr.find(2)->second)->costPtr().use_count() << std::endl;
 
 
-	    auto hugeres = myGraph.dijkstra(myGraph.begin());
-	    auto resbfs = myGraph.bfs(myGraph.begin());
-
-		for(auto it = hugeres.begin(); it != hugeres.end(); ++it){
-			std::cout << "Node Key: " << it->first << " d: " << it->second.d << " d (bfs): " << resbfs[it->first].d << std::endl;
-		}
-
+		std::cout << "Test removig endge: " << std::endl;
+		std::cout << "isConnectedTo(1, 2): " << testptr.isConnectedTo(1, 2) << std::endl;	
+		testptr.removeEdge(1, 2);
+		std::cout << "isConnectedTo(1, 2): " << testptr.isConnectedTo(1, 2) << std::endl;	
 
 	}
+
 
 	std::cout << "End program";
 

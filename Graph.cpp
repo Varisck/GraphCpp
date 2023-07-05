@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include <iostream>
 
 template <class Key, class Data, class Cost, GraphType GT>
 Graph<Key, Data, Cost, GT>::Graph() {
@@ -108,8 +109,8 @@ Cost &Graph<Key, Data, Cost, GT>::operator()(iterator itNode1, iterator itNode2)
 		return itNode1->second->getEdgeCost(itNode2->second);
 	}
 	else {
-		// if graph is directed creates the reverse edge as well
-		if(getGraphType() == directed){
+		// if graph is undirected creates the reverse edge as well
+		if(getGraphType() == undirected){
 			std::shared_ptr<Cost> costPtr = itNode1->second->add_edge(itNode2->second, maxCost_).first->costPtr();
 			itNode2->second->add_edge(itNode1->second, *costPtr);
 			return *costPtr;
@@ -143,7 +144,37 @@ const Cost &Graph<Key, Data, Cost, GT>::operator()(const Key &key1, const Key &k
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
-bool Graph<Key, Data, Cost, GT>::isConnectedTo(iterator itNode1, iterator itNode2) const {
+bool Graph<Key, Data, Cost, GT>::removeEdge(const Key &key1, const Key &key2){
+	iterator itNode1{find(key1)};
+	iterator itNode2{find(key2)};
+	return removeEdge(itNode1, itNode2);
+}
+
+template <class Key, class Data, class Cost, GraphType GT>
+bool Graph<Key, Data, Cost, GT>::removeEdge(const_iterator it1, const_iterator it2){
+	if(!isConnectedTo(it1, it2))
+		return false;
+
+	it1->second->removeEdge(it2->second);
+	return true;
+}
+
+template <class Key, class Data, class Cost, GraphType GT>
+bool Graph<Key, Data, Cost, GT>::isConnectedTo(const Key &key1, const Key &key2) const {
+	const_iterator it1{find(key1)};
+	const_iterator it2{find(key2)};
+	return isConnectedTo(it1, it2);
+}
+
+template <class Key, class Data, class Cost, GraphType GT>
+bool Graph<Key, Data, Cost, GT>::isConnectedTo(Key &&key1, Key &&key2) const {
+	const_iterator it1{std::move(find(key1))};
+	const_iterator it2{std::move(find(key2))};
+	return isConnectedTo(it1, it2);
+}
+
+template <class Key, class Data, class Cost, GraphType GT>
+bool Graph<Key, Data, Cost, GT>::isConnectedTo(const_iterator itNode1, const_iterator itNode2) const {
 	return itNode1->second->isEdge(itNode2->second);
 }
 

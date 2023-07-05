@@ -1,11 +1,10 @@
 #ifndef GRAPH_GRAPH_H_
 #define GRAPH_GRAPH_H_
 
-#include <map>
 #include <utility>          // std::size_t, std::pair
 #include <limits>           // std::numeric_limits<T>
-#include <list>
-#include <queue>
+#include <map>              // std::map
+#include <queue>            // std::queue, std::priority_queue
 #include <functional>       // std::greater<T>
 
 
@@ -106,10 +105,16 @@ public:
     Cost &operator()(Key &&key1, Key &&key2);
     Cost &operator()(iterator n1, iterator n2);
     const Cost &operator()(const Key &key1, const Key &key2, const Cost &cost);
-    // =======> remove edge functions to be implemented
+    // have to manage the () operator with the undirected graph 
+    // maybe return std::pair<Cost, bool> ????
+    bool removeEdge(const Key &key1, const Key &key2);
+    bool removeEdge(const_iterator it1, const_iterator it2);
+
 
     // check if to nodes are connected by an edge
-    bool isConnectedTo(iterator itNode1, iterator itNode2) const;
+    bool isConnectedTo(const Key &key1, const Key &key2) const;
+    bool isConnectedTo(Key &&key1, Key &&key2) const;
+    bool isConnectedTo(const_iterator itNode1, const_iterator itNode2) const;
 
 
     // --- Algorithms functions ---
@@ -118,6 +123,7 @@ public:
     std::map<Key, visitData> bfs(const Key &start) const;
     std::map<Key, visitData> bfs(const iterator start) const;
 
+    // run dfs on start node returns data on visited nodes
     std::map<Key, visitData> dfs(const Key &start) const;
     std::map<Key, visitData> dfs(const const_iterator start) const;
     void dfsVisit(std::map<Key, visitData>& visitedNodes, const const_iterator node, std::size_t& time) const;
@@ -128,8 +134,10 @@ public:
     // the last matrix of floydWarhall algorithm
     std::vector<Cost> floydWarshall();
 
+    // run dikjstra algorithm on start node return data on visited nodes
     std::map<Key, visitData> dijkstra(const Key &start) const;
     std::map<Key, visitData> dijkstra(const const_iterator start) const;
+
 
     // =====> connected components
     // =====> kruskal prim
