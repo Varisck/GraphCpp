@@ -139,13 +139,14 @@ public:
     std::map<Key, visitData> dijkstra(const Key &start) const;
     std::map<Key, visitData> dijkstra(const const_iterator start) const;
 
-    // =====> working on...
+    // returns the minimum spanning tree as a new graph 
+    // return ref or pointer to graph (??)
     Graph<Key, Data, Cost, GT> prim(const Key &root) const;
     Graph<Key, Data, Cost, GT> prim(const const_iterator root) const;
 
     // =====> kruskal
-    // =====> connected components
 
+    // =====> connected components TO DO
     Graph<Key, Data, Cost, GT> getConnectedComponents() const;
 
     // --- Iterators functinos ---
