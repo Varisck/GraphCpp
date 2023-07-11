@@ -134,6 +134,7 @@ class GraphTest {
 			auto mst = testPrimG.prim(1);
 			auto mstFromC = testPrimG.prim(3);
 			auto mstFromD = testPrimG.prim(4);
+			auto mstFromNoIterator = testPrimG.prim();
 
 			assert(mst(1, 2) == 10);
 			assert(mst(2, 3) == 2);
@@ -152,6 +153,12 @@ class GraphTest {
 			assert(mstFromD(3, 5) == 1);
 			assert(mstFromD(5, 4) == 1);
 			assert(mstFromD(5, 6) == 2);
+
+			assert(mstFromNoIterator(1, 2) == 10);
+			assert(mstFromNoIterator(2, 3) == 2);
+			assert(mstFromNoIterator(3, 5) == 1);
+			assert(mstFromNoIterator(5, 4) == 1);
+			assert(mstFromNoIterator(5, 6) == 2);
 
 			std::cout << "[+] Tested prim algorithm" << std::endl;
 		}

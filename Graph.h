@@ -140,7 +140,9 @@ public:
     std::map<Key, visitData> dijkstra(const const_iterator start) const;
 
     // returns the minimum spanning tree as a new graph 
+    // if no key is provided runs prim on cbegin()
     // return ref or pointer to graph (??)
+    Graph<Key, Data, Cost, GT> prim() const;
     Graph<Key, Data, Cost, GT> prim(const Key &root) const;
     Graph<Key, Data, Cost, GT> prim(const const_iterator root) const;
 

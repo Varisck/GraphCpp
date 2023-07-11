@@ -349,6 +349,11 @@ std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, C
 }
 
 template <class Key, class Data, class Cost, GraphType GT>
+Graph<Key, Data, Cost, GT> Graph<Key, Data, Cost, GT>::prim() const {
+	return prim((*this).cbegin());
+}
+
+template <class Key, class Data, class Cost, GraphType GT>
 Graph<Key, Data, Cost, GT> Graph<Key, Data, Cost, GT>::prim(const Key &root) const {
 	const_iterator itRoot{find(root)};
 	return prim(itRoot);
