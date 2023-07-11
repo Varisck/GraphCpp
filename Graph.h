@@ -139,11 +139,14 @@ public:
     std::map<Key, visitData> dijkstra(const Key &start) const;
     std::map<Key, visitData> dijkstra(const const_iterator start) const;
 
+    // =====> working on...
+    Graph<Key, Data, Cost, GT> prim(const Key &root) const;
+    Graph<Key, Data, Cost, GT> prim(const const_iterator root) const;
 
+    // =====> kruskal
     // =====> connected components
-    // =====> kruskal prim
-    // =====> bfsd
 
+    Graph<Key, Data, Cost, GT> getConnectedComponents() const;
 
     // --- Iterators functinos ---
 

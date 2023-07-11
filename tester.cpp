@@ -9,6 +9,23 @@ class GraphTest {
 
 		GraphTest() {}
 
+		template <class Key, class Data, class Cost, GraphType GT>
+		void printGraph(std::string name, Graph<Key, Data, Cost, GT> graph) {
+			std::cout << name << ": " << graph.size() << std::endl;
+			for(auto node = graph.cbegin(); node != graph.cend(); ++node){
+				std::cout << "Key: " << node->first << " value: " << node->second->getData() << std::endl;
+			}
+			std::cout << "Connections: " << std::endl;
+			for(auto node = graph.cbegin(); node != graph.cend(); ++node){
+				std::cout << "Key: " << node->first;
+				for(auto edge = node->second->cbegin(); edge != node->second->cend(); ++edge){
+					if(auto nodeTo = edge->getNodeTo().lock())
+						std::cout << " connected to: " << nodeTo->getKeyInGraph() << " (" << edge->cost() << "), ";
+				}
+				std::cout << std::endl;
+			}
+		}
+
 		void runTests() {
 			testInsert();
 			testFind();
@@ -18,6 +35,7 @@ class GraphTest {
 			testDfs();
 			testDijkstra();
 			testFloydWarshall();
+			testPrim();
 			std::cout << "[+] Testing finished!" << std::endl;
 		}
 
@@ -44,7 +62,7 @@ class GraphTest {
 
 			// undirectedGraph[4];
 
-			std::cout << "[+] Insertion tested operator[], emplace, size, erase, contains" << std::endl;
+			std::cout << "[+] Tested Insertion operator[], emplace, size, erase, contains" << std::endl;
 		}
 
 		void testFind() {
@@ -54,7 +72,7 @@ class GraphTest {
 			assert(undirectedGraph.find(6) == undirectedGraph.end());	// key 6 not present in graph
 			assert(undirectedGraph.contains(6) == false);
 
-			std::cout << "[+] tested find(), node->getData()" << std::endl;
+			std::cout << "[+] tTested find(), node->getData()" << std::endl;
 		}
 
 		void testEdges() {
@@ -88,7 +106,7 @@ class GraphTest {
 			assert(undirectedGraph.contains(10) == false);
 			assert(undirectedGraph.contains(12) == false);
 
-			std::cout << "[+] tested operator(), isConnectedTo(), removeEdge()" << std::endl;
+			std::cout << "[+] Tested operator(), isConnectedTo(), removeEdge()" << std::endl;
 		}
 
 		void testMergeGraphs() {}
@@ -96,6 +114,34 @@ class GraphTest {
 		void testDfs() {}
 		void testDijkstra() {}
 		void testFloydWarshall() {}
+		
+		void testPrim() {
+			UndirectedGraph<int, char> testPrimG;
+			testPrimG[1] = 'a';
+			testPrimG[2] = 'b';
+			testPrimG[3] = 'c';
+			testPrimG[4] = 'd';
+			testPrimG[5] = 'e';
+			testPrimG[6] = 'f';
+
+			testPrimG(1, 2, 10);
+			testPrimG(2, 3, 2);
+			testPrimG(3, 5, 1);
+			testPrimG(5, 4, 1);
+			testPrimG(2, 5, 50);
+			testPrimG(5, 6, 2);
+
+			auto mst = testPrimG.prim(1);
+
+			assert(mst(1, 2) == 10);
+			assert(mst(2, 3) == 2);
+			assert(mst(3, 5) == 1);
+			assert(mst(5, 4) == 1);
+			assert(mst(5, 6) == 2);
+
+
+			std::cout << "[+] Tested prim algorithm" << std::endl;
+		}
 
 };
 

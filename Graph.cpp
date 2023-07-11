@@ -348,6 +348,66 @@ std::map<Key, typename Graph<Key, Data, Cost, GT>::visitData> Graph<Key, Data, C
 	return visitedNodes;
 }
 
+template <class Key, class Data, class Cost, GraphType GT>
+Graph<Key, Data, Cost, GT> Graph<Key, Data, Cost, GT>::prim(const Key &root) const {
+	const_iterator itRoot{find(root)};
+	return prim(itRoot);
+}
+
+template <class Key, class Data, class Cost, GraphType GT>
+Graph<Key, Data, Cost, GT> Graph<Key, Data, Cost, GT>::prim(const const_iterator root) const {
+
+	std::map<Key, visitData> visitingNodeMap;		// map holding data of currently visiting nodes
+	visitingNodeMap[root->first].d = 0;
+	visitingNodeMap[root->first].p.reset();
+	std::map<Key, visitData> visitedNodes;			// map for visited nodes and making graph 
+
+	auto customCompare = [](const std::pair<Key, Cost>& v1, const std::pair<Key, Cost>& v2) {
+		return std::greater<Cost>()(v1.second, v2.second);
+	};
+
+	std::priority_queue<
+		std::pair<Key, Cost>,
+		std::vector<std::pair<Key, Cost>>,
+		decltype(customCompare)> queue(customCompare);
+
+	queue.push(std::make_pair(root->first, 0));
+
+	while(!queue.empty()){
+		auto current = queue.top();
+		queue.pop();
+		// check if node is in list of nodes to be visited and if distance in queue is still valid (match the saved one)
+		if(visitingNodeMap.find(current.first) != visitingNodeMap.end() && visitingNodeMap[current.first].d == current.second){
+			const_iterator currentIt = find(current.first);
+			for(typename node::const_iterator edge = currentIt->second->cbegin(); edge != currentIt->second->cend(); ++edge){
+				if(auto adjNode = edge->getNodeTo().lock()){
+					// if the node is not jet added to the mst and the cost is less then the saved one => update cost and push in queue
+					if(visitedNodes.find(adjNode->getKeyInGraph()) == visitedNodes.end() && (visitingNodeMap.find(adjNode->getKeyInGraph()) == visitingNodeMap.end() || edge->cost() < visitingNodeMap[adjNode->getKeyInGraph()].d)){
+						visitingNodeMap[adjNode->getKeyInGraph()].p = currentIt->second;
+						visitingNodeMap[adjNode->getKeyInGraph()].d = edge->cost();
+						queue.push(std::make_pair(adjNode->getKeyInGraph(), edge->cost()));
+					}
+				}
+			}
+			visitedNodes[currentIt->first].p = visitingNodeMap[currentIt->first].p;
+			visitedNodes[currentIt->first].d = visitingNodeMap[currentIt->first].d;
+			visitingNodeMap.erase(currentIt->first);
+		}
+	}
+
+	// constructing the mst
+	Graph<Key, Data, Cost, GT> mst;
+	for(auto it = visitedNodes.begin(); it != visitedNodes.end(); ++it){
+		mst[it->first] = find(it->first)->second->getData();
+		if(auto n1 = it->second.p.lock()){
+			if(getGraphType() == undirected)						// put if outside to optimze the for loop (???)
+				mst(n1->getKeyInGraph(), it->first, it->second.d);
+			else
+				mst(n1->getKeyInGraph(), it->first) = it->second.d;
+		}
+	}
+	return mst;
+}
 
 
 
