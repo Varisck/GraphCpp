@@ -385,6 +385,37 @@ int main() {
 	}
 
 
+	{
+		class A {
+			public:
+			A(){
+				std::cout << "Constructor" << std::endl;
+			};
+			A(const A& other) {
+				std::cout << "Copy-Constructor" << std::endl;
+			}
+			A(A&& other) {
+				std::cout << "Move-Constructor" << std::endl;
+			}
+			A& operator=(const A& other) { return *this; }
+		};
+		UndirectedGraph<int, A> g;
+		std::cout << "Nodes..." << std::endl;
+		g[1];
+		g[2];
+		g[3];
+		std::cout << "Node with ref key..." << std::endl;
+		int k = 4;
+		g[k];
+		std::cout << "Linking..." << std::endl;
+		g(1, 2, 100);
+		g(3, 1, 100);
+		std::cout << "Algo..." << std::endl;
+		g.dijkstra(1);
+
+
+	}
+
 	std::cout << "End program";
 
 	return 0;

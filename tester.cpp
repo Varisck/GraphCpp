@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include <random>
 
 #include "Graph.h"
 
@@ -72,7 +73,7 @@ class GraphTest {
 			assert(undirectedGraph.find(6) == undirectedGraph.end());	// key 6 not present in graph
 			assert(undirectedGraph.contains(6) == false);
 
-			std::cout << "[+] tTested find(), node->getData()" << std::endl;
+			std::cout << "[+] Tested find(), node->getData()" << std::endl;
 		}
 
 		void testEdges() {
@@ -165,9 +166,44 @@ class GraphTest {
 
 };
 
+void testBigGraph() {
+    // Create a graph with int keys, double data, and float costs
+    Graph<int, double, float> myGraph;
+
+    // Create a random number generator for generating node data
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0.0, 100.0);
+
+    // Create a large graph with 10,000 nodes
+    const int numNodes = 10000;
+    for (int i = 1; i <= numNodes; ++i) {
+        double nodeData = dis(gen); // Generate random node data
+        myGraph.emplace(i, nodeData); // Add node to the graph
+    }
+
+    // Connect nodes randomly with edges
+    std::uniform_int_distribution<> nodeDist(1, numNodes);
+    std::uniform_real_distribution<> costDist(1.0, 10.0);
+    const int numEdges = 50000; // Total number of edges to create
+
+    for (int i = 0; i < numEdges; ++i) {
+        int node1 = nodeDist(gen);
+        int node2 = nodeDist(gen);
+        float cost = costDist(gen);
+
+        // Add an edge between the two randomly chosen nodes with a random cost
+        myGraph(node1, node2) = cost;
+    }
+
+  	myGraph.prim();
+  	std::cout << "[+] BigGraph end" << std::endl;
+}
+
 
 int main() {
 	GraphTest tester;
 	tester.runTests();
+	// testBigGraph();
 	return 0;
 }

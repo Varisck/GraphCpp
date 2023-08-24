@@ -73,7 +73,7 @@ std::pair<typename Graph<Key, Data, Cost, GT>::iterator, bool> Graph<Key, Data, 
 template <class Key, class Data, class Cost, GraphType GT>
 std::pair<typename Graph<Key, Data, Cost, GT>::iterator, bool> Graph<Key, Data, Cost, GT>::emplace(Key &&key, node &&n) {
 	// std::cout << "moved" << std::endl;
-	std::pair<iterator, bool> pair{nodes_.emplace(std::move(key), std::move(std::make_shared<node>(n)))};
+	std::pair<iterator, bool> pair{nodes_.emplace(std::move(key), std::move(std::make_shared<node>(std::move(n))))};
 	pair.first->second->setKey(key);
 	return pair;
 }
@@ -137,7 +137,6 @@ template <class Key, class Data, class Cost, GraphType GT>
 const Cost &Graph<Key, Data, Cost, GT>::operator()(const Key &key1, const Key &key2, const Cost &cost) {
 	iterator itNode1{emplace(key1).first};
 	iterator itNode2{emplace(key2).first};
-
 	operator()(itNode1, itNode2) = cost;
 	operator()(itNode2, itNode1) = cost;
 	return cost;
