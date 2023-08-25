@@ -17,32 +17,32 @@ class Node {
 			std::shared_ptr<Cost> cost_;
 
 		public:
-			explicit edge(const std::weak_ptr<Node> &ptr, Cost &c);
-			edge(const edge& other);
+			explicit edge(const std::weak_ptr<Node> &ptr, Cost &c) : nodeTo_(ptr), cost_(std::make_shared<Cost>(c)) {}
+			edge(const edge& other) : nodeTo_(other.nodeTo_), cost_(other.cost) {}
 
-			Cost& cost() const;
-			std::shared_ptr<Cost> costPtr() const;
+			Cost& cost() const { return *cost_; }
+			std::shared_ptr<Cost> costPtr() const { return cost_; }
 			std::weak_ptr<Node> getNodeTo() const { return nodeTo_; }
 
 		friend class Node<Data, Key, Cost>;
 	};
 
-		// list of edges connected to this node
-		std::list<edge> listEdges_;
-		// data in the node
-		Data data_;
-		// key to reference this node in the graph
-		Key key_;
+	// list of edges connected to this node
+	std::list<edge> listEdges_;
+	// data in the node
+	Data data_;
+	// key to reference this node in the graph
+	Key key_;
 
 	public:
-		explicit Node();
-		Node(const Data &data);
-		Node(Data&& data);
-		Node(const Node& node);
-		Node(Node&& other);
+		explicit Node() {}
+		Node(const Data &data) : data_(data) {}
+		Node(Data&& data) : data_(std::move(data)) {}
+		Node(const Node& node) : data_(node.data_) {}
+		Node(Node&& other) : data_(std::move(other.data_)) {}
 
-		Data& getData();
-		Data& getData() const;
+		Data& getData() { return data_; }
+		Data& getData() const { return data_; }
 
 		using ListEdges = std::list<edge>;
 		using ListEdgesIterator = typename ListEdges::iterator;
@@ -102,15 +102,13 @@ class Node {
 		void setKey(const Key &key) { key_ = key; }
 		Key& getKeyInGraph() { return key_; }
 
-		iterator begin() noexcept;
-		iterator end() noexcept;
-		const_iterator begin() const noexcept;
-		const_iterator end() const noexcept;
-		const_iterator cbegin() const noexcept;
-		const_iterator cend() const noexcept;
+		iterator begin() noexcept { return listEdges_.begin(); }
+		iterator end() noexcept { return listEdges_.end(); }
+		const_iterator begin() const noexcept { return listEdges_.begin(); }
+		const_iterator end() const noexcept { return listEdges_.end(); }
+		const_iterator cbegin() const noexcept { return listEdges_.cbegin(); }
+		const_iterator cend() const noexcept { return listEdges_.cend(); }
 
-};
-
-#include "Node.cpp"
+}; // class Node
 
 #endif
